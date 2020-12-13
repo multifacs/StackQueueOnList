@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 using namespace std;
 
@@ -127,9 +128,15 @@ public:
 
 	void push_front(T data)
 	{
-		Node<T>* temp = head;
-		head = new Node<T>(data, head);
-		temp->pPrev = head;
+		if (head == nullptr)
+			push_back(data);
+		else
+		{
+			Node<T>* temp = head;
+			head = new Node<T>(data, head);
+			temp->pPrev = head;
+		}
+
 		Size++;
 	}
 
@@ -142,7 +149,7 @@ public:
 		tail = tail->pPrev;
 
 		if (tail != nullptr)
-			tail->pPrev = nullptr;
+			tail->pNext = nullptr;
 		else
 			head = head->pNext;
 

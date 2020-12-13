@@ -16,6 +16,7 @@ endif()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/dlist) #Добавляем директорию "${CMAKE_CURRENT_SOURCE_DIR}/vectorlib" в дополняемые каталоги включаемых файлов
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/lsq)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/gtest)
 #${CMAKE_CURRENT_SOURCE_DIR} - стандартная переменная с адресом рабочей директории
 
 add_subdirectory(main) #Добавляем директорию с под-CMakeList-ом, и выполняем под-CMakeList
