@@ -34,6 +34,49 @@ private:
 	};
 
 public:
+	class Iterator
+	{
+	private:
+		Node<T>* node;
+	public:
+		Iterator(Node<T>* _n) : node(_n) {}
+		Iterator(Iterator& _v) : node(_v.node) {}
+
+		bool CanMove() { return (node != nullptr); }
+		void MoveFwd() { node = node->pNext; }
+		void MoveBck() { node = node->pPrev; }
+
+		bool operator==(const Iterator& _v) { return node == _v.node; }
+		bool operator!=(const Iterator& _v) { return !((*this) == _v); }
+
+		Iterator operator++(int)
+		{
+			if (!CanMove())
+				throw logic_error("reached end");
+			MoveFwd();
+			return (*this);
+		}
+		Iterator operator--(int)
+		{
+			if (!CanMove())
+				throw logic_error("reached end");
+			Bck();
+			return (*this);
+		}
+		Iterator& operator=(const Iterator& _v)
+		{
+			node = _v.node;
+			return (*this);
+		}
+
+		T& operator* () {
+			if (node != nullptr)
+				return node->data;
+			else
+				throw logic_error("empty pointer");
+		}
+	};
+
 	DList()
 	{
 		Size = 0;
@@ -45,46 +88,37 @@ public:
 		Size = 0;
 		head = nullptr;
 		tail = nullptr;
-		for (int i = 0; i < _l.Size; i++)
-			push_back(_l[i]);
+		Iterator k = _l.begin();
+		while (k.CanMove())
+		{
+			push_back(*k);
+			k++;
+		}
 	}
 	~DList()
 	{
-		clear();
+		if (GetSize() != 0)
+			clear();
 	}
 
 	int GetSize() const { return Size; }
 
-	T& operator[](const int index)
+	DList<T>& operator =(DList<T>& _v)
 	{
-		if (index < 0 || index >= Size)
-			throw length_error("incorrect index");
-
-		if (index <= round(Size / 2.0))
+		Size = 0;
+		head = nullptr;
+		tail = nullptr;
+		Iterator k = _v.begin();
+		while (k.CanMove())
 		{
-			int counter = 0;
-			Node<T>* current = this->head;
-			while (current != nullptr)
-			{
-				if (counter == index)
-					return current->data;
-				current = current->pNext;
-				counter++;
-			}
+			push_back(*k);
+			k++;
 		}
-		else
-		{
-			int counter = Size - 1;
-			Node<T>* current = this->tail;
-			while (current != nullptr)
-			{
-				if (counter == index)
-					return current->data;
-				current = current->pPrev;
-				counter++;
-			}
-		}
+		return *this;
 	}
+
+	Iterator begin() { return Iterator(head); }
+	Iterator end() { return Iterator(tail); }
 
 	void push_back(T data)
 	{
@@ -135,9 +169,8 @@ public:
 			Node<T>* temp = head;
 			head = new Node<T>(data, head);
 			temp->pPrev = head;
+			Size++;
 		}
-
-		Size++;
 	}
 
 	void pop_back()
@@ -202,10 +235,14 @@ public:
 
 	friend ostream& operator << (ostream& ostr, DList<T>& _l)
 	{
+		Iterator k = _l.begin();
 		ostr << "{";
 		for (int i = 0; i < _l.GetSize() - 1; i++)
-			ostr << _l[i] << ", ";
-		ostr << _l[_l.GetSize() - 1] << "}";
+		{
+			ostr << *k << ", ";
+			k++;
+		}
+		ostr << *k << "}";
 
 		return ostr;
 	}
