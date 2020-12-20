@@ -91,3 +91,49 @@ TEST(lqueue, cant_pop_in_empty_queue)
 	LQueue<int> a;
 	ASSERT_ANY_THROW(a.pop());
 }
+
+
+TEST(pqueue, can_create_queue)
+{
+	ASSERT_NO_THROW(PQueue<int> a);
+}
+
+TEST(pqueue, can_copy)
+{
+	PQueue<int> a;
+	a.push(10, 0);
+
+	PQueue<int> b(a);
+
+	EXPECT_EQ(10, b.pop());
+}
+
+TEST(pqueue, can_push)
+{
+	PQueue<int> a;
+
+	a.push(5, 0);
+	a.push(10, 1);
+
+	EXPECT_EQ(10, a.pop());
+}
+
+TEST(pqueue, can_pop)
+{
+	PQueue<int> a;
+
+	a.push(5, 0);
+	a.push(10, 1);
+
+	a.pop();
+
+	a.push(15, 2);
+
+	EXPECT_EQ(15, a.pop());
+}
+
+TEST(pqueue, cant_pop_in_empty_queue)
+{
+	LQueue<int> a;
+	ASSERT_ANY_THROW(a.pop());
+}
